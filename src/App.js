@@ -4,6 +4,7 @@ import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import Select from '@mui/material/Select';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import MuiDrawer from '@mui/material/Drawer';
@@ -23,6 +24,8 @@ import EntryModal from './components/EntryModal';
 import { mainListItems } from './components/listItems';
 import { db, SignInScreen } from './utils/firebase';
 import { emptyEntry } from './utils/mutations';
+import { categories } from './utils/categories';
+import MenuItem from '@mui/material/MenuItem';
 
 // MUI styling constants
 
@@ -123,6 +126,8 @@ export default function App() {
   }, [currentUser]);
 
   // Main content of homescreen. This is displayed conditionally from user auth status
+  // Category to filter entries by.
+  const [category, setCategory] = useState(-1)
 
   function mainContent() {
     if (isSignedIn) {
@@ -131,10 +136,21 @@ export default function App() {
           <Grid item xs={12}>
             <Stack direction="row" spacing={3}>
               <EntryModal entry={emptyEntry} type="add" user={currentUser} />
+              <Select
+                labelId="select-filter-label"
+                id="select-filter"
+                size="small"
+                value={category}
+                label="Filter"
+                onChange={(event) => setCategory(event.target.value)}
+              >
+                <MenuItem value={-1}>{"No filter"}</MenuItem>
+                {categories.map((category) => (<MenuItem value={category.id}>{category.name}</MenuItem>))}
+              </Select>            
             </Stack>
           </Grid>
           <Grid item xs={12}>
-            <EntryTable entries={entries} />
+            <EntryTable entries={category !== -1 ? entries.filter(entry => entry.category === category) : entries} />
           </Grid>
         </Grid>
       )

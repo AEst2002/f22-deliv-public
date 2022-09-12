@@ -35,7 +35,7 @@ export default function EntryModal({ entry, type, user }) {
    const [link, setLink] = useState(entry.link);
    const [editing, setEditing] = useState(false)
    const [description, setDescription] = useState(entry.description);
-   const [category, setCategory] = React.useState(entry.category);
+   const [category, setCategory] = useState(entry.category);
 
    // Modal visibility handlers
    
@@ -70,6 +70,7 @@ export default function EntryModal({ entry, type, user }) {
 
    // TODO: Add Edit Mutation Handler
    const handleUpdate = () => {
+      // take entry's id and copy in value of entry state vars.
       const updatedEntry = {
          id: entry.id,
          name,
@@ -132,7 +133,7 @@ export default function EntryModal({ entry, type, user }) {
                   variant="standard"
                   value={name}
                   disabled={disableInput}
-                  onChange={(event) => setName(event.target.value)} // render save button if user changes something.
+                  onChange={(event) => setName(event.target.value)}
                />
                <TextField
                   margin="normal"
