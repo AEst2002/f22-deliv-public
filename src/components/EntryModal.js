@@ -13,7 +13,7 @@ import TextField from '@mui/material/TextField';
 import * as React from 'react';
 import { useState } from 'react';
 import { categories } from '../utils/categories';
-import { addEntry, updateEntry } from '../utils/mutations';
+import { addEntry, updateEntry, deleteEntry } from '../utils/mutations';
 
 // Modal component for individual entries.
 
@@ -81,7 +81,12 @@ export default function EntryModal({ entry, type, user }) {
       setEditing(false)
       handleClose()
    }
+
    // TODO: Add Delete Mutation Handler
+   const handleDelete = () => {
+      deleteEntry(entry)
+      handleClose()
+   }
 
    // Button handlers for modal opening and inside-modal actions.
    // These buttons are displayed conditionally based on if adding or editing/opening.
@@ -99,6 +104,7 @@ export default function EntryModal({ entry, type, user }) {
    const actionButtons =
       type === "edit" ?
          <DialogActions>
+            <Button variant="contained" color="error" onClick={handleDelete}>Delete</Button>
             <Button onClick={handleClose}>Cancel</Button>
             {editing ? <Button variant="contained" onClick={handleUpdate}>Save</Button> : <></> }
          </DialogActions>
