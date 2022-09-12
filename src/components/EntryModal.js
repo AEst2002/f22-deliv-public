@@ -13,7 +13,7 @@ import TextField from '@mui/material/TextField';
 import * as React from 'react';
 import { useState } from 'react';
 import { categories } from '../utils/categories';
-import { addEntry } from '../utils/mutations';
+import { addEntry, updateEntry } from '../utils/mutations';
 
 // Modal component for individual entries.
 
@@ -33,11 +33,12 @@ export default function EntryModal({ entry, type, user }) {
    const [open, setOpen] = useState(false);
    const [name, setName] = useState(entry.name);
    const [link, setLink] = useState(entry.link);
+   const [editing, setEditing] = useState(false)
    const [description, setDescription] = useState(entry.description);
    const [category, setCategory] = React.useState(entry.category);
 
    // Modal visibility handlers
-
+   
    const handleClickOpen = () => {
       setOpen(true);
       setName(entry.name);
@@ -48,6 +49,7 @@ export default function EntryModal({ entry, type, user }) {
 
    const handleClose = () => {
       setOpen(false);
+      setEditing(false)
    };
 
    // Mutation handlers
@@ -67,7 +69,18 @@ export default function EntryModal({ entry, type, user }) {
    };
 
    // TODO: Add Edit Mutation Handler
-
+   const handleUpdate = () => {
+      const updatedEntry = {
+         id: entry.id,
+         name,
+         link,
+         description,
+         category,
+      };
+      updateEntry(updatedEntry).catch(console.error)
+      setEditing(false)
+      handleClose()
+   }
    // TODO: Add Delete Mutation Handler
 
    // Button handlers for modal opening and inside-modal actions.
@@ -87,6 +100,7 @@ export default function EntryModal({ entry, type, user }) {
       type === "edit" ?
          <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
+            {editing ? <Button variant="contained" onClick={handleUpdate}>Save</Button> : <></> }
          </DialogActions>
          : type === "add" ?
             <DialogActions>
@@ -109,7 +123,7 @@ export default function EntryModal({ entry, type, user }) {
                   fullWidth
                   variant="standard"
                   value={name}
-                  onChange={(event) => setName(event.target.value)}
+                  onChange={(event) => {setEditing(true); setName(event.target.value)}}
                />
                <TextField
                   margin="normal"
@@ -119,7 +133,7 @@ export default function EntryModal({ entry, type, user }) {
                   fullWidth
                   variant="standard"
                   value={link}
-                  onChange={(event) => setLink(event.target.value)}
+                  onChange={(event) => {setEditing(true); setLink(event.target.value)}}
                />
                <TextField
                   margin="normal"
@@ -130,7 +144,7 @@ export default function EntryModal({ entry, type, user }) {
                   multiline
                   maxRows={8}
                   value={description}
-                  onChange={(event) => setDescription(event.target.value)}
+                  onChange={(event) => {setEditing(true); setDescription(event.target.value)}}
                />
 
                <FormControl fullWidth sx={{ "margin-top": 20 }}>
@@ -140,7 +154,7 @@ export default function EntryModal({ entry, type, user }) {
                      id="demo-simple-select"
                      value={category}
                      label="Category"
-                     onChange={(event) => setCategory(event.target.value)}
+                     onChange={(event) => {setEditing(true); setCategory(event.target.value)}}
                   >
                      {categories.map((category) => (<MenuItem value={category.id}>{category.name}</MenuItem>))}
                   </Select>
