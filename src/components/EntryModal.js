@@ -79,7 +79,6 @@ export default function EntryModal({ entry, type, user }) {
       };
       updateEntry(updatedEntry).catch(console.error)
       setEditing(false)
-      handleClose()
    }
 
    // TODO: Add Delete Mutation Handler
@@ -106,7 +105,7 @@ export default function EntryModal({ entry, type, user }) {
          <DialogActions>
             <Button variant="contained" color="error" onClick={handleDelete}>Delete</Button>
             <Button onClick={handleClose}>Cancel</Button>
-            {editing ? <Button variant="contained" onClick={handleUpdate}>Save</Button> : <></> }
+            {editing ? <Button variant="contained" onClick={handleUpdate}>Save</Button> : <Button variant="contained" onClick={() => setEditing(true)}>Edit</Button> }
          </DialogActions>
          : type === "add" ?
             <DialogActions>
@@ -114,6 +113,9 @@ export default function EntryModal({ entry, type, user }) {
                <Button variant="contained" onClick={handleAdd}>Add Entry</Button>
             </DialogActions>
             : null;
+
+   // Disable inputs if viewing existing entry and NOT in edit mode.
+   const disableInput = !editing && type === "edit"
 
    return (
       <div>
@@ -129,7 +131,8 @@ export default function EntryModal({ entry, type, user }) {
                   fullWidth
                   variant="standard"
                   value={name}
-                  onChange={(event) => {setEditing(true); setName(event.target.value)}}
+                  disabled={disableInput}
+                  onChange={(event) => setName(event.target.value)} // render save button if user changes something.
                />
                <TextField
                   margin="normal"
@@ -139,7 +142,8 @@ export default function EntryModal({ entry, type, user }) {
                   fullWidth
                   variant="standard"
                   value={link}
-                  onChange={(event) => {setEditing(true); setLink(event.target.value)}}
+                  disabled={disableInput}
+                  onChange={(event) => setLink(event.target.value)}
                />
                <TextField
                   margin="normal"
@@ -150,7 +154,8 @@ export default function EntryModal({ entry, type, user }) {
                   multiline
                   maxRows={8}
                   value={description}
-                  onChange={(event) => {setEditing(true); setDescription(event.target.value)}}
+                  disabled={disableInput}
+                  onChange={(event) => setDescription(event.target.value)}
                />
 
                <FormControl fullWidth sx={{ "margin-top": 20 }}>
@@ -160,9 +165,9 @@ export default function EntryModal({ entry, type, user }) {
                      id="demo-simple-select"
                      value={category}
                      label="Category"
-                     onChange={(event) => {setEditing(true); setCategory(event.target.value)}}
+                     onChange={(event) => setCategory(event.target.value)}
                   >
-                     {categories.map((category) => (<MenuItem value={category.id}>{category.name}</MenuItem>))}
+                     {categories.map((category) => (<MenuItem disabled={disableInput} value={category.id}>{category.name}</MenuItem>))}
                   </Select>
                </FormControl>
             </DialogContent>

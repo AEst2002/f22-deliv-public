@@ -26,6 +26,7 @@ export async function addEntry(entry) {
 
 export async function updateEntry(entry) {
    // TODO: Create Mutation to Edit Entry
+   // Update all editable portions of entry.
    await updateDoc(doc(db, "entries", entry.id), {
       name: entry.name,
       link: entry.link,
@@ -36,5 +37,6 @@ export async function updateEntry(entry) {
 
 export async function deleteEntry(entry) {
    // TODO: Create Mutation to Delete Entry
+   // delete entry with given id.
    await deleteDoc(doc(db, "entries", entry.id))
 }
